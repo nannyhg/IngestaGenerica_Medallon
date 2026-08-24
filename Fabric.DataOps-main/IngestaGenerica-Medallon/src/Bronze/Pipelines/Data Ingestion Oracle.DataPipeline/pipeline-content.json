@@ -1,0 +1,361 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "items": {
+            "value": "@activity('Filter Only SQL Query').output.value",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "Copy",
+              "typeProperties": {
+                "source": {
+                  "type": "OracleSource",
+                  "oracleReaderQuery": {
+                    "value": "@item().SourceExecutionCommand",
+                    "type": "Expression"
+                  },
+                  "queryTimeout": {
+                    "value": "@{coalesce(if(\n  startsWith(string(item().DataPipelineSettings), '{\\\\'),   \n  json(json(string(item().DataPipelineSettings))).queryTimeout,\n  json(string(item().DataPipelineSettings)).queryTimeout          \n),'02:00:00')\n}",
+                    "type": "Expression"
+                  },
+                  "partitionOption": "None",
+                  "additionalColumns": {
+                    "type": "Expression",
+                    "value": "@json(concat(\n  '[{\"name\":\"Source\",\"value\":\"',\n  item().SourceSchemaName,\n  '\"}]'\n))\n"
+                  },
+                  "numberPrecision": 38,
+                  "numberScale": 18,
+                  "datasetSettings": {
+                    "type": "OracleTable",
+                    "schema": [],
+                    "externalReferences": {
+                      "connection": "@item().ConnectionObjectId"
+                    },
+                    "annotations": []
+                  }
+                },
+                "sink": {
+                  "type": "LakehouseTableSink",
+                  "tableActionOption": "OverwriteSchema",
+                  "applyVOrder": true,
+                  "partitionOption": "None",
+                  "datasetSettings": {
+                    "type": "LakehouseTable",
+                    "typeProperties": {
+                      "schema": {
+                        "value": "@item().DestinationSchemaName",
+                        "type": "Expression"
+                      },
+                      "table": {
+                        "value": "@item().DestinationTableName",
+                        "type": "Expression"
+                      }
+                    },
+                    "schema": [],
+                    "linkedService": {
+                      "name": "Bronze",
+                      "properties": {
+                        "type": "Lakehouse",
+                        "typeProperties": {
+                          "artifactId": "528e7ea8-c4ec-92ce-4ce8-635bd1e4999b",
+                          "workspaceId": "00000000-0000-0000-0000-000000000000",
+                          "rootFolder": "Tables"
+                        },
+                        "annotations": []
+                      }
+                    },
+                    "annotations": []
+                  }
+                },
+                "translator": {
+                  "type": "TabularTranslator",
+                  "typeConversion": true,
+                  "typeConversionSettings": {
+                    "allowDataTruncation": true,
+                    "treatBooleanAsNumber": false
+                  }
+                },
+                "enableStaging": false
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "CopyData By Query",
+              "dependsOn": []
+            }
+          ]
+        },
+        "name": "UseQuery For Each Query",
+        "dependsOn": [
+          {
+            "activity": "Filter Only SQL Query",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Lookup",
+        "typeProperties": {
+          "source": {
+            "type": "SqlServerSource",
+            "sqlReaderStoredProcedureName": "[Config].[uspGetPipelineConfiguration]",
+            "storedProcedureParameters": {
+              "DataPipelineCode": {
+                "type": "String",
+                "value": {
+                  "value": "@pipeline().parameters.DataPipelineCode",
+                  "type": "Expression"
+                }
+              },
+              "Debug": {
+                "type": "Byte[]",
+                "value": "0"
+              },
+              "EnvironmentCode": {
+                "type": "String",
+                "value": {
+                  "value": "@pipeline().parameters.EnvironmentCode",
+                  "type": "Expression"
+                }
+              },
+              "ProjectCode": {
+                "type": "String",
+                "value": {
+                  "value": "@pipeline().parameters.ProjectCode",
+                  "type": "Expression"
+                }
+              },
+              "ProjectTopicCode": {
+                "type": "String",
+                "value": {
+                  "value": "@pipeline().parameters.ProjectTopicCode",
+                  "type": "Expression"
+                }
+              },
+              "IsDeltaActive": {
+                "type": "Int16",
+                "value": {
+                  "value": "@pipeline().parameters.IsDeltaActive",
+                  "type": "Expression"
+                }
+              }
+            },
+            "partitionOption": "None",
+            "queryTimeout": "02:00:00"
+          },
+          "datasetSettings": {
+            "type": "SqlServerTable",
+            "typeProperties": {
+              "database": "BDDataOps-a58eb555-d9a3-44ea-b3e6-bb356ce6f632"
+            },
+            "schema": [],
+            "externalReferences": {
+              "connection": "a4d4c62f-27be-43be-ba24-7e7003037e4e"
+            },
+            "annotations": []
+          },
+          "firstRowOnly": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "ReadDataPipelineConfigutarion",
+        "description": "This task allow calling the stored procedure in the database that will return the datapipeline configuration according to the parameters sent",
+        "dependsOn": []
+      },
+      {
+        "type": "Filter",
+        "typeProperties": {
+          "items": {
+            "value": "@activity('ReadDataPipelineConfigutarion').output.value",
+            "type": "Expression"
+          },
+          "condition": {
+            "value": "@equals(item().SourceCommandType, 'Query')",
+            "type": "Expression"
+          }
+        },
+        "name": "Filter Only SQL Query",
+        "dependsOn": [
+          {
+            "activity": "ReadDataPipelineConfigutarion",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Filter",
+        "typeProperties": {
+          "items": {
+            "value": "@activity('ReadDataPipelineConfigutarion').output.value",
+            "type": "Expression"
+          },
+          "condition": {
+            "value": "@equals(item().SourceCommandType, 'Table')",
+            "type": "Expression"
+          }
+        },
+        "name": "Filter Only Tables",
+        "dependsOn": [
+          {
+            "activity": "ReadDataPipelineConfigutarion",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "items": {
+            "value": "@activity('Filter Only Tables').output.value\n",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "Copy",
+              "typeProperties": {
+                "source": {
+                  "type": "OracleSource",
+                  "queryTimeout": {
+                    "value": "@{coalesce(if(\n  startsWith(string(item().DataPipelineSettings), '{\\\\'),   \n  json(json(string(item().DataPipelineSettings))).queryTimeout,\n  json(string(item().DataPipelineSettings)).queryTimeout          \n),'02:00:00')\n}",
+                    "type": "Expression"
+                  },
+                  "partitionOption": "None",
+                  "additionalColumns": {
+                    "type": "Expression",
+                    "value": "@json(concat(\n  '[{\"name\":\"Source\",\"value\":\"',\n  item().SourceSchemaName,\n  '\"}]'\n))\n"
+                  },
+                  "numberPrecision": 38,
+                  "numberScale": 18,
+                  "datasetSettings": {
+                    "type": "OracleTable",
+                    "typeProperties": {
+                      "schema": {
+                        "value": "@item().SourceSchemaName",
+                        "type": "Expression"
+                      },
+                      "table": {
+                        "value": "@item().SourcePhysicalName",
+                        "type": "Expression"
+                      }
+                    },
+                    "schema": [],
+                    "externalReferences": {
+                      "connection": "@item().ConnectionObjectId"
+                    },
+                    "annotations": []
+                  }
+                },
+                "sink": {
+                  "type": "LakehouseTableSink",
+                  "tableActionOption": "OverwriteSchema",
+                  "applyVOrder": true,
+                  "partitionOption": "None",
+                  "datasetSettings": {
+                    "type": "LakehouseTable",
+                    "typeProperties": {
+                      "schema": {
+                        "value": "@item().DestinationSchemaName",
+                        "type": "Expression"
+                      },
+                      "table": {
+                        "value": "@item().DestinationTableName",
+                        "type": "Expression"
+                      }
+                    },
+                    "schema": [],
+                    "linkedService": {
+                      "name": "Bronze",
+                      "properties": {
+                        "type": "Lakehouse",
+                        "typeProperties": {
+                          "artifactId": "528e7ea8-c4ec-92ce-4ce8-635bd1e4999b",
+                          "workspaceId": "00000000-0000-0000-0000-000000000000",
+                          "rootFolder": "Tables"
+                        },
+                        "annotations": []
+                      }
+                    },
+                    "annotations": []
+                  }
+                },
+                "translator": {
+                  "type": "TabularTranslator",
+                  "typeConversion": true,
+                  "typeConversionSettings": {
+                    "allowDataTruncation": true,
+                    "treatBooleanAsNumber": false
+                  }
+                },
+                "enableStaging": false
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "CopyData by Table",
+              "dependsOn": []
+            }
+          ]
+        },
+        "name": "Usetable For Each Table",
+        "dependsOn": [
+          {
+            "activity": "Filter Only Tables",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ],
+    "parameters": {
+      "EnvironmentCode": {
+        "type": "string",
+        "defaultValue": "DEV"
+      },
+      "DataPipelineCode": {
+        "type": "string",
+        "defaultValue": "*"
+      },
+      "ProjectTopicCode": {
+        "type": "string",
+        "defaultValue": "TTSTransaccionales"
+      },
+      "ProjectCode": {
+        "type": "string",
+        "defaultValue": "Aduanas"
+      },
+      "IsDeltaActive": {
+        "type": "int",
+        "defaultValue": 1
+      }
+    },
+    "variables": {
+      "Prueba": {
+        "type": "String"
+      }
+    }
+  }
+}

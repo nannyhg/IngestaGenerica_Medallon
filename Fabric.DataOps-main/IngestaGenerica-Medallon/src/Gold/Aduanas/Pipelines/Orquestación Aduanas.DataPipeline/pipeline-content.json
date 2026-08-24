@@ -1,0 +1,232 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "InvokePipeline",
+        "typeProperties": {
+          "parameters": {
+            "EnvironmentCode": {
+              "value": "@pipeline().parameters.EnviromentCode",
+              "type": "Expression"
+            },
+            "DataPipelineCode": {
+              "value": "@pipeline().parameters.DataPipelineCode",
+              "type": "Expression"
+            },
+            "ProjectTopicCode": "TTSTransaccionales",
+            "ProjectCode": {
+              "value": "@pipeline().parameters.ProjectCode",
+              "type": "Expression"
+            },
+            "IsDeltaActive": {
+              "value": "@pipeline().parameters.IsDeltaActive",
+              "type": "Expression"
+            }
+          },
+          "waitOnCompletion": true,
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "pipelineId": "e11aafc9-fa2f-bbdb-4cc5-3ecf2a9bbf2d",
+          "operationType": "InvokeFabricPipeline"
+        },
+        "externalReferences": {
+          "connection": "23917036-5da6-4f36-914a-5eb597334ee3"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Ingesta Transaccion",
+        "dependsOn": [
+          {
+            "activity": "Ingesta Maestros",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "54e771eb-f9f1-9b44-4fe4-738d66d451de",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "environmentCode": {
+              "value": {
+                "value": "@pipeline().parameters.EnviromentCode",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "topicCode": {
+              "value": "TTSMaestros",
+              "type": "string"
+            },
+            "dataPipelineCode": {
+              "value": {
+                "value": "@pipeline().parameters.DataPipelineCode",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Silver Maestros",
+        "dependsOn": [
+          {
+            "activity": "Ingesta Transaccion",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "InvokePipeline",
+        "typeProperties": {
+          "parameters": {
+            "EnvironmentCode": {
+              "value": "@pipeline().parameters.EnviromentCode",
+              "type": "Expression"
+            },
+            "DataPipelineCode": {
+              "value": "@pipeline().parameters.DataPipelineCode",
+              "type": "Expression"
+            },
+            "ProjectTopicCode": "TTSMaestros",
+            "ProjectCode": {
+              "value": "@pipeline().parameters.ProjectCode",
+              "type": "Expression"
+            },
+            "IsDeltaActive": {
+              "value": "@pipeline().parameters.IsDeltaActive",
+              "type": "Expression"
+            }
+          },
+          "waitOnCompletion": true,
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "pipelineId": "e11aafc9-fa2f-bbdb-4cc5-3ecf2a9bbf2d",
+          "operationType": "InvokeFabricPipeline"
+        },
+        "externalReferences": {
+          "connection": "23917036-5da6-4f36-914a-5eb597334ee3"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Ingesta Maestros",
+        "dependsOn": []
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "54e771eb-f9f1-9b44-4fe4-738d66d451de",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "environmentCode": {
+              "value": {
+                "value": "@pipeline().parameters.EnviromentCode",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "topicCode": {
+              "value": "TTSTransaccionales",
+              "type": "string"
+            },
+            "dataPipelineCode": {
+              "value": {
+                "value": "@pipeline().parameters.DataPipelineCode",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Silver Transaccionales",
+        "dependsOn": [
+          {
+            "activity": "Silver Maestros",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Office365Email",
+        "typeProperties": {
+          "body": "@concat('El pipeline de ',pipeline().PipelineName,' con id \"',pipeline().Pipeline,'\" presentó una falla en el workspace con id \"',pipeline().DataFactory,'\" a las ',pipeline().TriggerTime,'. El id de la ejecución fue \"',pipeline().RunId,'\"')",
+          "to": "jbonillap@grupotla.com",
+          "subject": {
+            "value": "@concat('Se presentó un error en el pipeline ',pipeline().PipelineName)",
+            "type": "Expression"
+          }
+        },
+        "externalReferences": {
+          "connection": "376ea1ff-e037-4654-a63b-389aa35f1e1c"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Notificacion de fallos",
+        "dependsOn": [
+          {
+            "activity": "Silver Transaccionales",
+            "dependencyConditions": [
+              "Skipped",
+              "Failed"
+            ]
+          }
+        ]
+      }
+    ],
+    "parameters": {
+      "EnviromentCode": {
+        "type": "string",
+        "defaultValue": "DEV"
+      },
+      "DataPipelineCode": {
+        "type": "string",
+        "defaultValue": "*"
+      },
+      "ProjectTopicCode": {
+        "type": "string",
+        "defaultValue": "TTSTransaccionales"
+      },
+      "ProjectCode": {
+        "type": "string",
+        "defaultValue": "Aduanas"
+      },
+      "IsDeltaActive": {
+        "type": "int",
+        "defaultValue": 1
+      }
+    }
+  }
+}

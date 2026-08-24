@@ -1,0 +1,134 @@
+[
+    {
+        "name": "DataOps.Workspace",
+        "dataops_id": "00000000-0000-0000-0000-000000000000"
+    },
+    {
+        "name": "cnBDDataOps",
+        "dataops_id": "00000000-0000-0000-0000-000000000001"
+    },
+    {
+        "name": "Bronze.Lakehouse",
+        "dataops_id": "528e7ea8-c4ec-92ce-4ce8-635bd1e4999b"
+    },
+    {
+        "name": "Admin.Lakehouse",
+        "dataops_id": "df88adbe-32bc-a471-4bdb-a6af693cb2c8"
+    },
+    {
+        "name": "Gold.Lakehouse",
+        "dataops_id": "82d02323-4faf-b00c-4077-ba50fc3e1420"
+    },
+    {
+        "name": "Silver.Lakehouse",
+        "dataops_id": "b87d0884-a60e-9146-4fde-fefb6f04d354"
+    },
+    {
+        "name": "BDDataOps.SQLDatabase",
+        "dataops_id": "6ce6f632-bb35-b3e6-44ea-d9a3a58eb555"
+    },
+    {
+        "name": "DataOpsConfig.Notebook",
+        "dataops_id": "4316649b-8e8b-8e7d-4a6d-44b58f63a589"
+    },
+    {
+        "name": "DataOpsLibrary.Notebook",
+        "dataops_id": "f1801703-2e14-a882-48db-f8116ed53860"
+    },
+    {
+        "name": "Data Ingestion API.DataPipeline",
+        "dataops_id": "800f0259-d71b-833a-418e-803e7145c5e0"
+    },
+    {
+        "name": "Data Ingestion Oracle.DataPipeline",
+        "dataops_id": "e11aafc9-fa2f-bbdb-4cc5-3ecf2a9bbf2d"
+    },
+    {
+        "name": "Data Ingestion SQL ODBC.DataPipeline",
+        "dataops_id": "9457f646-210a-921b-4f9a-fd0374d74e31"
+    },
+    {
+        "name": "DataContractBronzeToSilver.Notebook",
+        "dataops_id": "54e771eb-f9f1-9b44-4fe4-738d66d451de"
+    },
+    {
+        "name": "DataContractBronzeToSilver Copy.Notebook",
+        "dataops_id": "0a2fb959-e766-982e-40bb-8003bf0df9ff"
+    },
+    {
+        "name": "Table Maintenance Silver.DataPipeline",
+        "dataops_id": "8194e150-809e-b9d5-4ee3-248468f1966c"
+    },
+    {
+        "name": "Table Maintenance Silver.Notebook",
+        "dataops_id": "69374065-d9ed-9281-4c2e-0f6f86cbe50c"
+    },
+    {
+        "name": "Schema Gold.Notebook",
+        "dataops_id": "45fa5594-c63c-8f12-4750-c9c501eb57cf"
+    },
+    {
+        "name": "DimTiempo.Notebook",
+        "dataops_id": "37547e3d-a27d-af73-4010-e6b799f6f40f"
+    },
+    {
+        "name": "DimActividadComercial.Notebook",
+        "dataops_id": "417e1543-63df-a1d1-4eba-c2ad09a6b99e"
+    },
+    {
+        "name": "DimArticulo.Notebook",
+        "dataops_id": "78bca04c-9764-8628-4877-39c61c697e82"
+    },
+    {
+        "name": "DimBodega.Notebook",
+        "dataops_id": "051f7335-74d6-9d94-464d-98f455c34f73"
+    },
+    {
+        "name": "DimCentroCosto.Notebook",
+        "dataops_id": "61034770-9d86-903e-483f-b93520fbf365"
+    },
+    {
+        "name": "DimClasificacion.Notebook",
+        "dataops_id": "2a5ac973-665e-ba7d-453a-3112e5640396"
+    },
+    {
+        "name": "DimCliente.Notebook",
+        "dataops_id": "8a4e76d4-a4b5-a8f8-42f2-752dbb95736a"
+    },
+    {
+        "name": "DimCuentaContable.Notebook",
+        "dataops_id": "0e43f10a-2ba6-8391-47e6-b5fb135fab3d"
+    },
+    {
+        "name": "DimEmpresa.Notebook",
+        "dataops_id": "e7e2c7d6-6a05-8de5-423d-2dea6b09993a"
+    },
+    {
+        "name": "DimImpuesto.Notebook",
+        "dataops_id": "5df304d6-c72b-998a-484e-639df483f56e"
+    },
+    {
+        "name": "DimMoneda.Notebook",
+        "dataops_id": "4f6de479-7e07-b678-4137-b21de7c2ac31"
+    },
+    {
+        "name": "DimPais.Notebook",
+        "dataops_id": "a5656959-0af4-adb2-44e0-49cd35f6fb06"
+    },
+    {
+        "name": "DimSubtipoDocCC.Notebook",
+        "dataops_id": "a9e72ac9-2d8a-8f4f-449a-8353ec8801fa"
+    },
+    {
+        "name": "DimVendedor.Notebook",
+        "dataops_id": "60c4efc0-1dfc-8616-47aa-434bb1d712da"
+    },
+    {
+        "name": "FactMayor.Notebook",
+        "dataops_id": "0ec36fff-da18-917a-44a3-987d67d6a739"
+    },
+    {
+        "name": "Orquestación Aduanas.DataPipeline",
+        "dataops_id": "e22f5bb1-7819-bcc8-4cb7-839e4361f63e"
+    }
+]

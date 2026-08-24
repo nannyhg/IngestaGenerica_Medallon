@@ -1,0 +1,15 @@
+[
+  {
+    "name": "BDDataOps",
+    "path": "/Tables",
+    "target": {
+      "type": "OneLake",
+      "oneLake": {
+        "path": "Tables/Config",
+        "itemId": "6ce6f632-bb35-b3e6-44ea-d9a3a58eb555",
+        "workspaceId": "00000000-0000-0000-0000-000000000000",
+        "artifactType": "SQLDbNative"
+      }
+    }
+  }
+]

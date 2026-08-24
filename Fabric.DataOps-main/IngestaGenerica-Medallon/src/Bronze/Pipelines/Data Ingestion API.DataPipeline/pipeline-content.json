@@ -1,0 +1,200 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "items": {
+            "value": "@activity('ReadDataPipelineConfigutarion').output.value",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "Copy",
+              "typeProperties": {
+                "source": {
+                  "type": "RestSource",
+                  "requestMethod": "GET",
+                  "paginationRules": {
+                    "supportRFC5988": "true"
+                  },
+                  "httpRequestTimeout": "00:01:40",
+                  "requestInterval": "00.00:00:00.010",
+                  "datasetSettings": {
+                    "type": "RestResource",
+                    "typeProperties": {
+                      "relativeUrl": {
+                        "value": "@item().SourceExecutionCommand",
+                        "type": "Expression"
+                      }
+                    },
+                    "schema": [],
+                    "externalReferences": {
+                      "connection": "@item().ConnectionObjectId"
+                    },
+                    "annotations": []
+                  }
+                },
+                "sink": {
+                  "type": "LakehouseTableSink",
+                  "tableActionOption": "OverwriteSchema",
+                  "applyVOrder": true,
+                  "partitionOption": "None",
+                  "datasetSettings": {
+                    "type": "LakehouseTable",
+                    "typeProperties": {
+                      "schema": {
+                        "value": "@item().DestinationSchemaName",
+                        "type": "Expression"
+                      },
+                      "table": {
+                        "value": "@item().DestinationTableName",
+                        "type": "Expression"
+                      }
+                    },
+                    "schema": [],
+                    "linkedService": {
+                      "name": "Bronze",
+                      "properties": {
+                        "type": "Lakehouse",
+                        "typeProperties": {
+                          "artifactId": "528e7ea8-c4ec-92ce-4ce8-635bd1e4999b",
+                          "workspaceId": "00000000-0000-0000-0000-000000000000",
+                          "rootFolder": "Tables"
+                        },
+                        "annotations": []
+                      }
+                    },
+                    "annotations": []
+                  }
+                },
+                "translator": {
+                  "type": "TabularTranslator",
+                  "typeConversion": true,
+                  "typeConversionSettings": {
+                    "allowDataTruncation": true,
+                    "treatBooleanAsNumber": false
+                  },
+                  "columnFlattenSettings": {
+                    "treatArrayAsString": false,
+                    "treatStructAsString": false,
+                    "flattenColumnDelimiter": "."
+                  }
+                },
+                "enableStaging": false
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "CopyData By Relative URL",
+              "dependsOn": []
+            }
+          ]
+        },
+        "name": "UseQuery For Each Query",
+        "dependsOn": [
+          {
+            "activity": "ReadDataPipelineConfigutarion",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Lookup",
+        "typeProperties": {
+          "source": {
+            "type": "SqlServerSource",
+            "sqlReaderStoredProcedureName": "[Config].[uspGetPipelineConfigurationAPI]",
+            "storedProcedureParameters": {
+              "DataPipelineCode": {
+                "type": "String",
+                "value": {
+                  "value": "@pipeline().parameters.DataPipelineCode",
+                  "type": "Expression"
+                }
+              },
+              "Debug": {
+                "type": "Byte[]",
+                "value": "0"
+              },
+              "EnvironmentCode": {
+                "type": "String",
+                "value": {
+                  "value": "@pipeline().parameters.EnvironmentCode",
+                  "type": "Expression"
+                }
+              },
+              "ProjectCode": {
+                "type": "String",
+                "value": {
+                  "value": "@pipeline().parameters.ProjectCode",
+                  "type": "Expression"
+                }
+              },
+              "ProjectTopicCode": {
+                "type": "String",
+                "value": {
+                  "value": "@pipeline().parameters.ProjectTopicCode",
+                  "type": "Expression"
+                }
+              }
+            },
+            "partitionOption": "None",
+            "queryTimeout": "02:00:00"
+          },
+          "datasetSettings": {
+            "type": "SqlServerTable",
+            "typeProperties": {
+              "database": "BDDataOps-a58eb555-d9a3-44ea-b3e6-bb356ce6f632"
+            },
+            "schema": [],
+            "externalReferences": {
+              "connection": "a4d4c62f-27be-43be-ba24-7e7003037e4e"
+            },
+            "annotations": []
+          },
+          "firstRowOnly": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "ReadDataPipelineConfigutarion",
+        "description": "This task allow calling the stored procedure in the database that will return the datapipeline configuration according to the parameters sent",
+        "dependsOn": []
+      }
+    ],
+    "parameters": {
+      "EnvironmentCode": {
+        "type": "string",
+        "defaultValue": "DEV"
+      },
+      "DataPipelineCode": {
+        "type": "string",
+        "defaultValue": "*"
+      },
+      "ProjectTopicCode": {
+        "type": "string",
+        "defaultValue": "Disatel-Gps"
+      },
+      "ProjectCode": {
+        "type": "string",
+        "defaultValue": "TransporteInt"
+      }
+    },
+    "variables": {
+      "Prueba": {
+        "type": "String"
+      }
+    }
+  }
+}

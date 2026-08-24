@@ -1,0 +1,6 @@
+CREATE USER [barango@grupotla.com]
+    WITH SID = 0xE7F50D23079FEB4AB9C7AD03E28DE556, TYPE = E;
+
+
+GO
+

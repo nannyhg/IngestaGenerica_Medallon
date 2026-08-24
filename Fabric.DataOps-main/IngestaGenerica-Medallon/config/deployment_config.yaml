@@ -1,0 +1,52 @@
+workspace: "DataOps"
+connections:
+  sql_connection: cnBDDataOps
+
+dataops_lakehouse_semantic_models:
+  - DataOps_Core_SM.SemanticModel
+  - DataOps_Item_SM.SemanticModel
+
+folders:
+  - name: "Bronze"
+    items:
+    - Bronze.Lakehouse
+    - Data Ingestion API.DataPipeline
+    - Data Ingestion Oracle.DataPipeline
+    - Data Ingestion SQL ODBC.DataPipeline
+
+  - name: "Config"
+    items:
+    - BDDataOps.SQLDatabase
+    - DataOpsConfig.Notebook
+    - DataOpsLibrary.Notebook
+
+  - name: "Gold"
+    items:
+    - Admin.Lakehouse
+    - Gold.Lakehouse
+    - Schema Gold.Notebook
+    - DimActividadComercial.Notebook
+    - DimArticulo.Notebook
+    - DimBodega.Notebook
+    - DimCentroCosto.Notebook
+    - DimClasificacion.Notebook
+    - DimCliente.Notebook
+    - DimCuentaContable.Notebook
+    - DimEmpresa.Notebook
+    - DimImpuesto.Notebook
+    - DimMoneda.Notebook
+    - DimPais.Notebook
+    - DimSubtipoDocCC.Notebook
+    - DimVendedor.Notebook
+    - FactMayor.Notebook
+    - DimTiempo.Notebook
+    - Orquestación Aduanas.DataPipeline
+
+  - name: "Silver"
+    items:
+    - Silver.Lakehouse
+    - DataContractBronzeToSilver.Notebook
+    - DataContractBronzeToSilver Copy.Notebook
+    - Table Maintenance Silver.DataPipeline
+    - Table Maintenance Silver.Notebook
+

@@ -1,0 +1,82 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "69374065-d9ed-9281-4c2e-0f6f86cbe50c",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "ProjectCode": {
+              "value": "Finanzas",
+              "type": "string"
+            },
+            "TopicCode": {
+              "value": "ExactusTransaccional",
+              "type": "string"
+            },
+            "Zone": {
+              "value": "Silver",
+              "type": "string"
+            }
+          },
+          "sessionTag": "ExactusOptimizacion"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Optimizar ExactusTransaccional",
+        "dependsOn": []
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "69374065-d9ed-9281-4c2e-0f6f86cbe50c",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "ProjectCode": {
+              "value": "Finanzas",
+              "type": "string"
+            },
+            "TopicCode": {
+              "value": "ExactusMaestros",
+              "type": "string"
+            },
+            "Zone": {
+              "value": "Silver",
+              "type": "string"
+            }
+          },
+          "sessionTag": "ExactusOptimizacion"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Optimizar ExactusMaestros",
+        "dependsOn": []
+      }
+    ],
+    "parameters": {
+      "ProjectCode": {
+        "type": "string",
+        "defaultValue": "Finanzas"
+      },
+      "ProjectTopicCode": {
+        "type": "string",
+        "defaultValue": "ExactusTransaccional"
+      },
+      "EnvironmentCode": {
+        "type": "string",
+        "defaultValue": "DEV"
+      }
+    }
+  }
+}
